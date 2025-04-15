@@ -9,6 +9,8 @@ export declare class WebSocketRequestResponseClient {
         responseEvent: string;
         socketClient: ISocket;
         errorParser?: (err: any) => any;
+        /** @default 5000 */
+        sendAlivePeriod?: number;
     };
     readonly _eventsWithResponse: Map<string, (data?: any) => any>;
     constructor(options: {
@@ -16,6 +18,8 @@ export declare class WebSocketRequestResponseClient {
         responseEvent: string;
         socketClient: ISocket;
         errorParser?: (err: any) => any;
+        /** @default 5000 */
+        sendAlivePeriod?: number;
     });
     onEvent(event: string, cb: (data?: any) => any): void;
     handleQuery(data: WSReqRes_QueryData): Promise<void>;

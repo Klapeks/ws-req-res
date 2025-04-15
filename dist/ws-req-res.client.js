@@ -42,7 +42,7 @@ var WebSocketRequestResponseClient = /** @class */ (function () {
         var _this = this;
         this.options = options;
         this._eventsWithResponse = new Map();
-        options.socketClient.on('center-query', function (data) {
+        options.socketClient.on(this.options.requestEvent, function (data) {
             _this.handleQuery(data);
         });
     }
@@ -62,7 +62,7 @@ var WebSocketRequestResponseClient = /** @class */ (function () {
                         };
                         aliveInterval = setInterval(function () {
                             sendResult({ alive: true });
-                        }, 5000);
+                        }, this.options.sendAlivePeriod || 5000);
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 4, , 5]);

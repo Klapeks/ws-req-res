@@ -13,9 +13,11 @@ export class WebSocketRequestResponseClient {
         requestEvent: string,
         responseEvent: string,
         socketClient: ISocket,
-        errorParser?: (err: any) => any
+        errorParser?: (err: any) => any,
+        /** @default 5000 */
+        sendAlivePeriod?: number
     }) {
-        options.socketClient.on('center-query', (data: any) => {
+        options.socketClient.on(this.options.requestEvent, (data: any) => {
             this.handleQuery(data);
         });
     }
@@ -31,7 +33,7 @@ export class WebSocketRequestResponseClient {
         }
         const aliveInterval = setInterval(() => {
             sendResult({ alive: true });
-        }, 5000);
+        }, this.options.sendAlivePeriod || 5000);
         try {
             const cb = this._eventsWithResponse.get(data.event);
             if (!cb) throw "Event not found: " + data.event;
