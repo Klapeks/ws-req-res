@@ -21,8 +21,8 @@ export declare class WebSocketRequestResponseServer<TRemoteSocket extends IRemot
     constructor(options: WebSocketRequestResponseServerOptions<TRemoteSocket>);
     addHandlerOnSocket(socket: IConnectedSocket): void;
     packetIdGenerator(socket: TRemoteSocket, event: string): string;
-    querySocket(socket: TRemoteSocket, event: string, data: any): Promise<unknown>;
-    queryRoom(room: string, event: string, data: any): Promise<unknown>;
+    querySocket(socket: TRemoteSocket, event: string, data: any): Promise<any>;
+    queryRoom(room: string, event: string, data: any): Promise<any>;
     handleQueryResult(result: WSReqRes_QueryResult, ignoreBroadcast: boolean): void;
 }
 export {};

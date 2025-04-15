@@ -49,7 +49,7 @@ export class WebSocketRequestResponseServer<TRemoteSocket extends IRemoteSocket>
     querySocket(socket: TRemoteSocket, event: string, data: any) {
         const packetId = this.packetIdGenerator(socket, event);
 
-        return new Promise((resolve, reject) => {
+        return new Promise<any>((resolve, reject) => {
             let _timeout = undefined as any;
             const resetTimeout = () => {
                 if (_timeout) clearTimeout(_timeout);
