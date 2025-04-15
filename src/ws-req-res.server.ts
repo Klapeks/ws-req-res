@@ -12,19 +12,21 @@ interface IConnectedSocket {
 const DEFAULT_TIMEOUT = 15_000;
 const _waitingResults = new Map<string, (result: WSReqRes_QueryResult) => void>();
 
+export interface WebSocketRequestResponseServerOptions<TRemoteSocket extends IRemoteSocket> {
+    requestEvent: string,
+    responseEvent: string,
+    listenFromOtherServers: (event: string, cb: (...args: any[]) => any) => any,
+    fetchRoomSockets: (room: string) => Promise<TRemoteSocket[]>,
+    broadcastToOtherServers: (...args: any[]) => any,
+
+    /** @default 15000 */
+    timeout?: number,
+    packetIdGenerator?: (socket: TRemoteSocket, event: string) => string
+}
+
 export class WebSocketRequestResponseServer<TRemoteSocket extends IRemoteSocket> {
 
-    constructor (readonly options: {
-        requestEvent: string,
-        responseEvent: string,
-        listenFromOtherServers: (event: string, cb: (...args: any[]) => any) => any,
-        fetchRoomSockets: (room: string) => Promise<TRemoteSocket[]>,
-        broadcastToOtherServers: (...args: any[]) => any,
-
-        /** @default 15000 */
-        timeout?: number,
-        packetIdGenerator?: (socket: TRemoteSocket, event: string) => string
-    }) {
+    constructor (readonly options: WebSocketRequestResponseServerOptions<TRemoteSocket>) {
         options.listenFromOtherServers(options.responseEvent, (result: any) => {
             this.handleQueryResult(result, true);
         })
