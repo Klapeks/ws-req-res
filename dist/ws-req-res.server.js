@@ -102,6 +102,8 @@ var WebSocketRequestResponseServer = /** @class */ (function () {
                     case 0: return [4 /*yield*/, this.options.fetchRoomSockets(room)];
                     case 1:
                         socket = (_a = (_b.sent())) === null || _a === void 0 ? void 0 : _a[0];
+                        if (!socket)
+                            throw "No socket connected in " + room;
                         return [2 /*return*/, this.querySocket(socket, event, data)];
                 }
             });

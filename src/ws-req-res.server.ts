@@ -81,6 +81,7 @@ export class WebSocketRequestResponseServer<TRemoteSocket extends IRemoteSocket>
 
     async queryRoom(room: string, event: string, data: any) {
         const socket = (await this.options.fetchRoomSockets(room))?.[0];
+        if (!socket) throw "No socket connected in " + room;
         return this.querySocket(socket, event, data);
     }
 
