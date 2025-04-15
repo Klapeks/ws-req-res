@@ -1,7 +1,10 @@
 import { WSReqRes_QueryData, WSReqRes_QueryResult } from "./ws-req-res.types";
 
 
-interface ISocket {
+interface IRemoteSocket {
+    emit: (...args: any[]) => any
+}
+interface IConnectedSocket {
     on: (event: string, cb: (...args: any[]) => any) => any
     emit: (...args: any[]) => any
 }
@@ -9,31 +12,31 @@ interface ISocket {
 const DEFAULT_TIMEOUT = 15_000;
 const _waitingResults = new Map<string, (result: WSReqRes_QueryResult) => void>();
 
-export class WebSocketRequestResponseServer<TSocket extends ISocket> {
+export class WebSocketRequestResponseServer<TRemoteSocket extends IRemoteSocket> {
 
     constructor (readonly options: {
         requestEvent: string,
         responseEvent: string,
         listenFromOtherServers: (event: string, cb: (...args: any[]) => any) => any,
-        fetchRoomSockets: (room: string) => Promise<TSocket[]>,
+        fetchRoomSockets: (room: string) => Promise<TRemoteSocket[]>,
         broadcastToOtherServers: (...args: any[]) => any,
 
         /** @default 15000 */
         timeout?: number,
-        packetIdGenerator?: (socket: ISocket, event: string) => string
+        packetIdGenerator?: (socket: TRemoteSocket, event: string) => string
     }) {
         options.listenFromOtherServers(options.responseEvent, (result: any) => {
             this.handleQueryResult(result, true);
         })
     }
 
-    addHandlerOnSocket(socket: ISocket) {
+    addHandlerOnSocket(socket: IConnectedSocket) {
         socket.on(this.options.responseEvent, (result) => {
             this.handleQueryResult(result, false);
         })
     }
 
-    packetIdGenerator(socket: ISocket, event: string) {
+    packetIdGenerator(socket: TRemoteSocket, event: string) {
         if (this.options.packetIdGenerator) {
             return this.options.packetIdGenerator(socket, event);
         }
@@ -41,7 +44,7 @@ export class WebSocketRequestResponseServer<TSocket extends ISocket> {
             + Date.now() + '-' + Math.random().toString().substring(2);
     }
 
-    querySocket(socket: ISocket, event: string, data: any) {
+    querySocket(socket: TRemoteSocket, event: string, data: any) {
         const packetId = this.packetIdGenerator(socket, event);
 
         return new Promise((resolve, reject) => {
