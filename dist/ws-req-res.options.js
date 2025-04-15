@@ -25,18 +25,19 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.optionsSocketIO = void 0;
-function optionsSocketIO(serverSocketIO) {
-    return {
-        broadcastToOtherServers: function (event) {
-            var args = [];
-            for (var _i = 1; _i < arguments.length; _i++) {
-                args[_i - 1] = arguments[_i];
-            }
-            return serverSocketIO.serverSideEmit.apply(serverSocketIO, __spreadArray([event], __read(args), false));
-        },
-        fetchRoomSockets: function (room) { return serverSocketIO.in(room).fetchSockets(); },
-        listenFromOtherServers: function (event, cb) { return serverSocketIO.on(event, cb); }
-    };
-}
-exports.optionsSocketIO = optionsSocketIO;
+exports.wsReqResOptions = void 0;
+exports.wsReqResOptions = {
+    socketIO: function (serverSocketIO) {
+        return {
+            broadcastToOtherServers: function (event) {
+                var args = [];
+                for (var _i = 1; _i < arguments.length; _i++) {
+                    args[_i - 1] = arguments[_i];
+                }
+                return serverSocketIO.serverSideEmit.apply(serverSocketIO, __spreadArray([event], __read(args), false));
+            },
+            fetchRoomSockets: function (room) { return serverSocketIO.in(room).fetchSockets(); },
+            listenFromOtherServers: function (event, cb) { return serverSocketIO.on(event, cb); }
+        };
+    }
+};
